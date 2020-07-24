@@ -1,0 +1,92 @@
+{
+  "Debug": true,
+  "Module": {
+  },
+  "Redis": [
+    {
+      "Address": ":6379",
+      "Database": "1",
+      "Password": "123456",
+      "MaxIdle": "64",
+      "MaxActive": "128",
+      "IdleTimeout": "180",
+      "ProcessID": "development"
+    },
+    {
+      "Address": ":6379",
+      "Database": "2",
+      "Password": "123456",
+      "MaxIdle": "64",
+      "MaxActive": "128",
+      "IdleTimeout": "180",
+      "ProcessID": "testing"
+    }
+  ],
+  "Mysql": [
+    {
+      "Address": "47.115.17.11:3306",
+      "Database": "game",
+      "Account": "ddup_admin",
+      "Password": "D@Dasf3SD&*!jall*89FddFAsl892#e&!0",
+      "ProcessID": "development"
+    },
+    {
+      "Address": "47.115.17.11:3306",
+      "Database": "game",
+      "Account": "ddup_admin",
+      "Password": "D@Dasf3SD&*!jall*89FddFAsl892#e&!0",
+      "ProcessID": "testing"
+    }
+  ],
+  "Consul": [
+    {
+      "Address": [
+        "127.0.0.1:8500"
+      ],
+      "RegisterInterval": 10,
+      "RegisterTTL": 20,
+      "KillWaitTTL": 60,
+      "ProcessID": "development"
+    },
+    {
+      "Address": [
+        "127.0.0.1:8501"
+      ],
+      "RegisterInterval": 10,
+      "RegisterTTL": 20,
+      "KillWaitTTL": 60,
+      "ProcessID": "testing"
+    }
+  ],
+  "Nats": [
+    {
+      "Address": "127.0.0.1:4222",
+      "MaxReconnects": 10000,
+      "ProcessID": "development"
+    },
+    {
+      "Address": "127.0.0.1:4223",
+      "MaxReconnects": 10000,
+      "ProcessID": "testing"
+    }
+  ],
+  "Mqtt": {
+    "WirteLoopChanNum": 10,
+    "ReadPackLoop": 1,
+    "ReadTimeout": 600,
+    "WriteTimeout": 300
+  },
+  "Rpc": {
+    "MaxCoroutine": 10000,
+    "RpcExpired": 3,
+    "LogSuccess": false
+  },
+  "Log": {
+    "file": {
+      "daily": true,
+      "level": 7,
+      "prefix": "",
+      "suffix": ".log"
+    }
+  }
+}
