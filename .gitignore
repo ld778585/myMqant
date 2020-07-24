@@ -1,0 +1,35 @@
+### Go ###
+# Binaries for programs and plugins
+.DS_Store
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+.*.swp
+*.log
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+/vendor/
+/Godeps/
+
+# filter files for build
+/bin/yfgame
+/bin/game.exe
+
+# filter goland auto files
+# .idea/workspace.xml
+# .idea/*
+.idea
+
+src/client/MessageType.cs
+src/client/MessageType.lua
+bin/conf/server_my.json
+bin/testServer.bat
