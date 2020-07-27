@@ -1,0 +1,27 @@
+*.attr
+*.exe
+*.log
+*.old
+*.swp
+*.test
+.envrc
+.gotools
+.netlify
+.vagrant/
+/pkg
+bin/
+changelog.tmp
+exit-code
+Thumbs.db
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+.fseventsd
+
+# Web artifacts
+website/.bundle
+website/build/
+website/npm-debug.log
+website/vendor

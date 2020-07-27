@@ -74,25 +74,25 @@ func BiReport(msg string) {
 // Debug Debug
 func Debug(format string, a ...interface{}) {
 	//gLogger.doPrintf(debugLevel, printDebugLevel, format, a...)
-	LogBeego().Debug(nil, format, a...)
+	//LogBeego().Debug(nil, format, a...)
 }
 
 // Info Info
 func Info(format string, a ...interface{}) {
 	//gLogger.doPrintf(releaseLevel, printReleaseLevel, format, a...)
-	LogBeego().Info(nil, format, a...)
+	//LogBeego().Info(nil, format, a...)
 }
 
 // Error Error
 func Error(format string, a ...interface{}) {
 	//gLogger.doPrintf(errorLevel, printErrorLevel, format, a...)
-	LogBeego().Error(nil, format, a...)
+	//LogBeego().Error(nil, format, a...)
 }
 
 // Warning Warning
 func Warning(format string, a ...interface{}) {
 	//gLogger.doPrintf(fatalLevel, printFatalLevel, format, a...)
-	LogBeego().Warning(nil, format, a...)
+	//LogBeego().Warning(nil, format, a...)
 }
 
 // TDebug TDebug

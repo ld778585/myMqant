@@ -85,6 +85,10 @@ func (this *GateProxy) Heartbeat(session gate.Session) {
 }
 
 func (this *GateProxy) OnRoute(session gate.Session, topic string, msg []byte) (bool, interface{}, error) {
+	//log.Debug("onRecvMsg,topic:%s,msgLen:byte",topic,len(msg))
+
+	res := make([]byte,64)
+	session.Send(msgType.RPC_USER_LOGOUT.SendMsgName,res)
 	return false, nil, nil
 }
 

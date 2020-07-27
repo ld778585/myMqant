@@ -1,0 +1,13 @@
+@import '../base/components/action-group/index';
+.action-group {
+  @extend %action-group;
+}
+/* This needs to go into table */
+%action-group {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+}
+%action-group .type-delete {
+  @extend %internal-button-dangerous;
+}

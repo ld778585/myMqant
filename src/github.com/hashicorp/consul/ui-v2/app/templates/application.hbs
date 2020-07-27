@@ -1,0 +1,13 @@
+{{head-layout}}
+{{title 'Consul' separator=' - '}}
+{{#if (not loading)}}
+  {{outlet}}
+{{else}}
+  {{#hashicorp-consul id="wrapper" permissions=permissions dcs=dcs dc=dc nspaces=nspaces nspace=nspace}}
+    {{#app-view class="loading show"}}
+      {{#block-slot name='content'}}
+        {{partial 'consul-loading'}}
+      {{/block-slot}}
+    {{/app-view}}
+  {{/hashicorp-consul}}
+{{/if}}
