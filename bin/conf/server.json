@@ -1,6 +1,19 @@
 {
   "Debug": true,
   "Module": {
+    "Gate": [
+      {
+        "Id": "Gate1",
+        "ProcessID": "development",
+        "Settings": {
+          "WSAddr": ":8001",
+          "TCPAddr": ":8101",
+          "Tls": false,
+          "CertFile": "",
+          "KeyFile": ""
+        }
+      }
+      ]
   },
   "Redis": [
     {

@@ -157,7 +157,7 @@ func (c *RPCClient) Call(ctx context.Context, _func string, params ...interface{
 	start := time.Now()
 	r, errstr := c.CallArgs(ctx, _func, ArgsType, args)
 	if c.app.GetSettings().RPC.Log {
-		log.TInfo(span, "rpc Call ServerId = %v Func = %v Elapsed = %v Result = %v ERROR = %v", c.nats_client.session.GetId(), _func, time.Since(start), r, errstr)
+		log.TInfo(span, "rpc Call ServerId = %v Func = %v Elapsed = %v Result = %v ERROR = %v", c.nats_client.session.GetID(), _func, time.Since(start), r, errstr)
 	}
 	return r, errstr
 }
@@ -183,7 +183,7 @@ func (c *RPCClient) CallNR(_func string, params ...interface{}) (err error) {
 	start := time.Now()
 	err = c.CallNRArgs(_func, ArgsType, args)
 	if c.app.GetSettings().RPC.Log {
-		log.TInfo(span, "rpc CallNR ServerId = %v Func = %v Elapsed = %v ERROR = %v", c.nats_client.session.GetId(), _func, time.Since(start), err)
+		log.TInfo(span, "rpc CallNR ServerId = %v Func = %v Elapsed = %v ERROR = %v", c.nats_client.session.GetID(), _func, time.Since(start), err)
 	}
 	return err
 }

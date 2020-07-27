@@ -31,12 +31,8 @@ type ProtocolMarshal interface {
 
 // ServerSession 服务代理
 type ServerSession interface {
-	// Deprecated: 因为命名规范问题函数将废弃,请用GetID代替
-	GetId() string
 	GetID() string
 	GetName() string
-	GetRpc() mqrpc.RPCClient
-	// Deprecated: 因为命名规范问题函数将废弃,请用GetRPC代替
 	GetRPC() mqrpc.RPCClient
 	GetApp() App
 	GetNode() *registry.Node

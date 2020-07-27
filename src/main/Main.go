@@ -1,6 +1,7 @@
 package main
 
 import (
+	"game/gate"
 	"github.com/liangdas/mqant"
 	"github.com/liangdas/mqant/log"
 	"github.com/liangdas/mqant/module"
@@ -13,6 +14,7 @@ import (
 )
 
 var MyApp module.App
+
 func main() {
 	defer func() {
 		if e := recover(); e != nil {
@@ -48,11 +50,14 @@ func main() {
 		module.KillWaitTTL(time.Minute*1),
 	)
 
-
 	app := mqant.CreateApp(
 		module.Debug(true),
-		)
+		module.Nats(nc),
+		module.Registry(rs),
+		module.KillWaitTTL(time.Minute*1),
+	)
 
 	app.Run(
-		)
+		gate.NewModule(),
+	)
 }

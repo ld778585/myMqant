@@ -294,7 +294,7 @@ func (app *DefaultApp) Watcher(node *registry.Node) {
 	//把注销的服务ServerSession删除掉
 	session, ok := app.serverList.Load(node.Id)
 	if ok && session != nil {
-		session.(module.ServerSession).GetRpc().Done()
+		session.(module.ServerSession).GetRPC().Done()
 		app.serverList.Delete(node.Id)
 	}
 }
