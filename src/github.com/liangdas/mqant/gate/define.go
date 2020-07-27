@@ -54,17 +54,9 @@ type Session interface {
 	GetIP() string
 	GetTopic() string
 	GetNetwork() string
-	// Deprecated: 因为命名规范问题函数将废弃,请用GetUserID代替
-	GetUserId() string
 	GetUserID() string
-	GetUserIdInt64() int64
-	// Deprecated: 因为命名规范问题函数将废弃,请用GetUserIDInt64代替
 	GetUserIDInt64() int64
-	// Deprecated: 因为命名规范问题函数将废弃,请用GetSessionID代替
-	GetSessionId() string
 	GetSessionID() string
-	// Deprecated: 因为命名规范问题函数将废弃,请用GetServerID代替
-	GetServerId() string
 	GetServerID() string
 	GetSettings() map[string]string
 	//网关本地的额外数据,不会再rpc中传递
@@ -72,18 +64,14 @@ type Session interface {
 	SetIP(ip string)
 	SetTopic(topic string)
 	SetNetwork(network string)
-	// Deprecated: 因为命名规范问题函数将废弃,请用SetUserID代替
-	SetUserId(userid string)
-	SetUserID(userid string)
-	SetSessionId(sessionid string)
-	// Deprecated: 因为命名规范问题函数将废弃,请用SetSessionID代替
-	SetSessionID(sessionid string)
-	// Deprecated: 因为命名规范问题函数将废弃,请用SetServerId代替
-	SetServerId(serverid string)
-	SetServerID(serverid string)
+	SetUserID(userID string)
+	SetSessionID(sessionID string)
+	SetServerID(serverID string)
 	SetSettings(settings map[string]string)
 	SetLocalKV(key, value string) error
 	RemoveLocalKV(key string) error
+	GetRouteServerID(serverType string) string
+	SetRouteServerId(serverType string, serverID string)
 	//网关本地的额外数据,不会再rpc中传递
 	SetLocalUserData(data interface{}) error
 	Serializable() ([]byte, error)
@@ -98,9 +86,9 @@ type Session interface {
 	Remove(key string) (err string)
 	Send(topic string, body []byte) (err string)
 	SendNR(topic string, body []byte) (err string)
-	SendBatch(Sessionids string, topic string, body []byte) (int64, string) //想该客户端的网关批量发送消息
+	SendBatch(SessionIDs string, topic string, body []byte) (int64, string) //想该客户端的网关批量发送消息
 	//查询某一个userId是否连接中，这里只是查询这一个网关里面是否有userId客户端连接，如果有多个网关就需要遍历了
-	IsConnect(Userid string) (result bool, err string)
+	IsConnect(UserID string) (result bool, err string)
 	//是否是访客(未登录) ,默认判断规则为 userId==""代表访客
 	IsGuest() bool
 	//设置自动的访客判断函数,记得一定要在全局的时候设置这个值,以免部分模块因为未设置这个判断函数造成错误的判断
@@ -109,14 +97,10 @@ type Session interface {
 	Clone() Session
 
 	CreateTrace()
-	// Deprecated: 因为命名规范问题函数将废弃,请用TraceID代替
-	TraceId() string
 	TraceID() string
 
 	// Span is an ID that probabilistically uniquely identifies this
 	// span.
-	// Deprecated: 因为命名规范问题函数将废弃,请用SpanID代替
-	SpanId() string
 	SpanID() string
 
 	ExtractSpan() log.TraceSpan

@@ -7,3 +7,7 @@ const VERSION = "1.0.0.1"
 const (
 	SERVER_TYPE_GATE = "Gate"
 )
+
+var SERVER_NAMES = []string{
+	SERVER_TYPE_GATE,
+}

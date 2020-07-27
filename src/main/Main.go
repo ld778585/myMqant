@@ -8,6 +8,7 @@ import (
 	"github.com/liangdas/mqant/registry"
 	"github.com/liangdas/mqant/registry/consul"
 	"github.com/nats-io/nats.go"
+	"math/rand"
 	"redisClient"
 	"systemConf"
 	"time"
@@ -57,7 +58,21 @@ func main() {
 		module.KillWaitTTL(time.Minute*1),
 	)
 
+	MyApp.OnConfigurationLoaded(onConfigLoaded)
+	MyApp.OnStartup(onStartup)
 	app.Run(
 		gate.NewModule(),
 	)
+}
+
+func onConfigLoaded(app module.App) {
+	log.Debug("on configLoaded.....")
+}
+
+func onStartup(app module.App) {
+	log.Debug("on startup.....")
+}
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
 }

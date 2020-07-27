@@ -89,10 +89,6 @@ func (sesid *sessionagent) GetNetwork() string {
 	return sesid.session.GetNetwork()
 }
 
-func (sesid *sessionagent) GetUserId() string {
-	return sesid.GetUserID()
-}
-
 func (sesid *sessionagent) GetUserID() string {
 	return sesid.session.GetUserId()
 }
@@ -105,24 +101,12 @@ func (sesid *sessionagent) GetUserIDInt64() int64 {
 	return uid64
 }
 
-func (sesid *sessionagent) GetUserIdInt64() int64 {
-	return sesid.GetUserIDInt64()
-}
-
 func (sesid *sessionagent) GetSessionID() string {
 	return sesid.session.GetSessionId()
 }
 
-func (sesid *sessionagent) GetSessionId() string {
-	return sesid.GetSessionID()
-}
-
 func (sesid *sessionagent) GetServerID() string {
 	return sesid.session.GetServerId()
-}
-
-func (sesid *sessionagent) GetServerId() string {
-	return sesid.GetServerID()
 }
 
 func (sesid *sessionagent) GetSettings() map[string]string {
@@ -147,21 +131,15 @@ func (sesid *sessionagent) SetUserID(userid string) {
 	sesid.session.UserId = userid
 	sesid.lock.Unlock()
 }
-func (sesid *sessionagent) SetUserId(userid string) {
-	sesid.SetUserID(userid)
-}
+
 func (sesid *sessionagent) SetSessionID(sessionid string) {
 	sesid.session.SessionId = sessionid
 }
-func (sesid *sessionagent) SetSessionId(sessionid string) {
-	sesid.SetSessionID(sessionid)
-}
+
 func (sesid *sessionagent) SetServerID(serverid string) {
 	sesid.session.ServerId = serverid
 }
-func (sesid *sessionagent) SetServerId(serverid string) {
-	sesid.SetServerID(serverid)
-}
+
 func (sesid *sessionagent) SetSettings(settings map[string]string) {
 	sesid.lock.Lock()
 	sesid.session.Settings = settings
@@ -182,6 +160,14 @@ func (sesid *sessionagent) RemoveLocalKV(key string) error {
 func (sesid *sessionagent) SetLocalUserData(data interface{}) error {
 	sesid.userdata = data
 	return nil
+}
+
+func (sesid *sessionagent) GetRouteServerID(serverType string) string {
+	return ""
+}
+
+func (sesid *sessionagent) SetRouteServerId(serverType string, serverID string) {
+
 }
 
 func (sesid *sessionagent) updateMap(s map[string]interface{}) error {
@@ -599,7 +585,7 @@ func (sesid *sessionagent) IsGuest() bool {
 	if sesid.judgeGuest != nil {
 		return sesid.judgeGuest(sesid)
 	}
-	if sesid.GetUserId() == "" {
+	if sesid.GetUserID() == "" {
 		return true
 	}
 	return false

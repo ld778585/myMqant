@@ -15,9 +15,9 @@ func Initialize() {
 	conf := systemConf.SystemConfMgr.RedisConf
 	log.Info("Redis connect to address:%v; database:%v", conf.Address, conf.Database)
 
-	dailDatabase := redis.DialDatabase(conf.Database)
-	dailPassword := redis.DialPassword(conf.Password)
-	redisConn, _ := redis.Dial("tcp", conf.Address, dailDatabase, dailPassword)
+	database := redis.DialDatabase(conf.Database)
+	password := redis.DialPassword(conf.Password)
+	redisConn, _ := redis.Dial("tcp", conf.Address, database, password)
 	redisConn.Close()
 
 	redisPool = &redis.Pool{
@@ -26,7 +26,7 @@ func Initialize() {
 		MaxActive:   conf.MaxActive,
 		IdleTimeout: conf.IdleTimeout * time.Second,
 		Dial: func() (redis.Conn, error) {
-			redisConn, err := redis.Dial("tcp", conf.Address, dailDatabase, dailPassword)
+			redisConn, err := redis.Dial("tcp", conf.Address, database, password)
 			if err != nil {
 				return nil, err
 			}
@@ -208,6 +208,15 @@ func HDel(key string, pattern string) (bool, error) {
 	}
 
 	return res.(int64) == 1, nil
+}
+
+func Expipeat(key string, second int64)  (bool, error)  {
+	_, err := Do("EXPIREAT", key, second )
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 func CleanCacheData(pattern string) {

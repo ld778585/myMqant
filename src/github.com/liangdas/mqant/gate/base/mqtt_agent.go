@@ -213,14 +213,14 @@ func (age *agent) toResult(a *agent, Topic string, Result interface{}, Error str
 	case module.ProtocolMarshal:
 		return a.WriteMsg(Topic, v2.GetData())
 	}
-	b, err := a.module.GetApp().ProtocolMarshal(a.session.TraceId(), Result, Error)
+	b, err := a.module.GetApp().ProtocolMarshal(a.session.TraceID(), Result, Error)
 	if err == "" {
 		if b != nil {
 			return a.WriteMsg(Topic, b.GetData())
 		}
 		return nil
 	}
-	br, _ := a.module.GetApp().ProtocolMarshal(a.session.TraceId(), nil, err)
+	br, _ := a.module.GetApp().ProtocolMarshal(a.session.TraceID(), nil, err)
 	return a.WriteMsg(Topic, br.GetData())
 }
 
