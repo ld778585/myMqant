@@ -3,6 +3,7 @@ package mysqlClient
 import (
 	"database/sql"
 	"fmt"
+	"game/define"
 	"github.com/liangdas/mqant/log"
 	"sync"
 	"systemConf"
@@ -37,9 +38,14 @@ func Initialize() {
 		panic(err)
 		return
 	}
+
 	_, err = mysqlDB.Exec(fmt.Sprintf("USE %v", dbName))
 	systems = make(map[string]bool)
+
 	locker = new(sync.RWMutex)
+	for _, tableName := range define.USER_DATA_NAME{
+		CreateTable(tableName)
+	}
 }
 
 func Exec(query string, args ...interface{}) (sql.Result, error) {

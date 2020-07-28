@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"game/dbBSvr"
 	"game/gate"
+	"game/hall"
 	"game/login"
 	"github.com/liangdas/mqant"
 	"github.com/liangdas/mqant/log"
@@ -68,6 +70,8 @@ func main() {
 	app.Run(
 		gate.NewModule(),
 		login.NewModule(),
+		dbBSvr.NewModule(),
+		hall.NewModule(),
 	)
 }
 

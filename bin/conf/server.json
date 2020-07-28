@@ -19,12 +19,24 @@
         "Id": "Login1",
         "ProcessID": "development"
       }
+    ],
+    "DBSvr": [
+      {
+        "Id": "DBSvr1",
+        "ProcessID": "development"
+      }
+      ],
+    "Hall": [
+      {
+        "Id": "Hall1",
+        "ProcessID": "development"
+      }
     ]
   },
   "Redis": [
     {
       "Address": ":6379",
-      "Database": "1",
+      "Database": "3",
       "Password": "123456",
       "MaxIdle": "64",
       "MaxActive": "128",
@@ -33,7 +45,7 @@
     },
     {
       "Address": ":6379",
-      "Database": "2",
+      "Database": "4",
       "Password": "123456",
       "MaxIdle": "64",
       "MaxActive": "128",

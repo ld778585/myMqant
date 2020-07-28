@@ -43,7 +43,8 @@ func (this *LoginProxy) Destroy() {
 }
 
 func (this *LoginProxy) onLoginRequest(session gate.Session, msg []byte) {
-	if session.GetUserIDInt64() != 0{
+	userID := session.GetUserIDInt64()
+	if userID >= 0 {
 		return
 	}
 
