@@ -13,7 +13,13 @@
           "KeyFile": ""
         }
       }
-      ]
+      ],
+    "Login": [
+      {
+        "Id": "Login1",
+        "ProcessID": "development"
+      }
+    ]
   },
   "Redis": [
     {
@@ -97,7 +103,7 @@
   "Log": {
     "file": {
       "daily": true,
-      "level": 7,
+      "level": 2,
       "prefix": "",
       "suffix": ".log"
     }

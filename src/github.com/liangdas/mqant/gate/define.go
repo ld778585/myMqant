@@ -16,6 +16,7 @@
 package gate
 
 import (
+	"github.com/golang/protobuf/proto"
 	"github.com/liangdas/mqant/log"
 	"github.com/liangdas/mqant/network"
 	"time"
@@ -71,7 +72,9 @@ type Session interface {
 	SetLocalKV(key, value string) error
 	RemoveLocalKV(key string) error
 	GetRouteServerID(serverType string) string
-	SetRouteServerId(serverType string, serverID string)
+	SetRouteServerID(serverType string, serverID string)
+	SetMsgID(msgId string)
+	GetMsgID() string
 	//网关本地的额外数据,不会再rpc中传递
 	SetLocalUserData(data interface{}) error
 	Serializable() ([]byte, error)
@@ -87,6 +90,8 @@ type Session interface {
 	Send(topic string, body []byte) (err string)
 	SendNR(topic string, body []byte) (err string)
 	SendBatch(SessionIDs string, topic string, body []byte) (int64, string) //想该客户端的网关批量发送消息
+	SendCB(topic string, body []byte) (err string)
+	SendCBWithProto(topic string, body proto.Message)  (err string)
 	//查询某一个userId是否连接中，这里只是查询这一个网关里面是否有userId客户端连接，如果有多个网关就需要遍历了
 	IsConnect(UserID string) (result bool, err string)
 	//是否是访客(未登录) ,默认判断规则为 userId==""代表访客

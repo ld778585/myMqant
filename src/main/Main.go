@@ -1,15 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"game/gate"
+	"game/login"
 	"github.com/liangdas/mqant"
 	"github.com/liangdas/mqant/log"
 	"github.com/liangdas/mqant/module"
 	"github.com/liangdas/mqant/registry"
 	"github.com/liangdas/mqant/registry/consul"
+	"github.com/liangdas/mqant/selector"
 	"github.com/nats-io/nats.go"
 	"math/rand"
 	"redisClient"
+	"sync"
 	"systemConf"
 	"time"
 )
@@ -58,10 +62,12 @@ func main() {
 		module.KillWaitTTL(time.Minute*1),
 	)
 
+	initGlobalSelector(MyApp)
 	MyApp.OnConfigurationLoaded(onConfigLoaded)
 	MyApp.OnStartup(onStartup)
 	app.Run(
 		gate.NewModule(),
+		login.NewModule(),
 	)
 }
 
@@ -75,4 +81,32 @@ func onStartup(app module.App) {
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
+}
+
+func initGlobalSelector(app module.App) {
+	app.Options().Selector.Init(selector.SetStrategy(func(services []*registry.Service) selector.Next {
+		var nodes []*registry.Node
+
+		// Filter the nodes for datacenter
+		for _, service := range services {
+			for _, node := range service.Nodes {
+				log.Info("server state:%v", node.Metadata["state"])
+				if node.Metadata["state"] == "inline" || node.Metadata["state"] == "" {
+					nodes = append(nodes, node)
+				}
+			}
+		}
+
+		var mtx sync.Mutex
+		//log.Info("services[0] $v",services[0].Nodes[0])
+		return func() (*registry.Node, error) {
+			mtx.Lock()
+			defer mtx.Unlock()
+			if len(nodes) == 0 {
+				return nil, fmt.Errorf("no node")
+			}
+			index := rand.Intn(int(len(nodes)))
+			return nodes[index], nil
+		}
+	}))
 }

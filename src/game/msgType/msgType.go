@@ -24,9 +24,15 @@ func NewMessageType(moduleName string, msgName string, tip string) *MessageType 
 
 //登录相关
 var (
+	CS_USER_LOGIN              *MessageType //客户端请求用户登录
 	RPC_USER_LOGOUT            *MessageType //用户下线
+	RPC_LOAD_USER_INFO_FROM_DB *MessageType //从db加载用户数据
+	RPC_USER_LOGIN_SUCCESS     *MessageType //用户登录成功
 )
 
 func init() {
-	RPC_USER_LOGOUT = NewMessageType("", "logOut", "用户下线")
+	CS_USER_LOGIN = NewMessageType("Login", "userLogin", "客户端请求用户登录")
+	RPC_USER_LOGOUT = NewMessageType("", "userLogout", "用户下线")
+	RPC_LOAD_USER_INFO_FROM_DB = NewMessageType("DBServer", "loadUserInfo", "从db加载用户数据")
+	RPC_USER_LOGIN_SUCCESS = NewMessageType("Hall", "userLoginSuccess", "用户登录成功")
 }

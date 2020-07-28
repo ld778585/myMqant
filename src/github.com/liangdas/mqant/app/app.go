@@ -340,12 +340,6 @@ func (app *DefaultApp) GetServerByID(serverID string) (module.ServerSession, err
 	return nil, errors.Errorf("nofound %v", serverID)
 }
 
-// GetServerById 通过服务ID获取服务实例
-// Deprecated: 因为命名规范问题函数将废弃,请用GetServerById代替
-func (app *DefaultApp) GetServerById(serverID string) (module.ServerSession, error) {
-	return app.GetServerByID(serverID)
-}
-
 // GetServerBySelector 获取服务实例,可设置选择器
 func (app *DefaultApp) GetServerBySelector(serviceName string, opts ...selector.SelectOption) (module.ServerSession, error) {
 	next, err := app.opts.Selector.Select(serviceName, opts...)
@@ -409,7 +403,7 @@ func (app *DefaultApp) GetRouteServer(filter string, opts ...selector.SelectOpti
 	if len(sl) == 2 {
 		moduleID := sl[1]
 		if moduleID != "" {
-			return app.GetServerById(filter)
+			return app.GetServerByID(filter)
 		}
 	}
 	moduleType := sl[0]

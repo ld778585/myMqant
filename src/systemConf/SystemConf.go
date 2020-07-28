@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/liangdas/mqant/log"
+	logs "github.com/liangdas/mqant/log/beego"
 	"github.com/tidwall/gjson"
 	"io/ioutil"
 	"os"
@@ -25,6 +26,7 @@ type SystemConf struct {
 	BiDir      string     //日志文件夹
 	Debug      bool       //是否调试环境
 	appDir     string     //app路径
+	logLv      int        //日志等级
 	RedisConf  *RedisConf //redis配置文件数据
 	MysqlConf  *MysqlConf //redis配置文件数据
 	ConsulConf *ConsulConf
@@ -65,6 +67,7 @@ func InitConfig() error {
 	SystemConfMgr = &SystemConf{}
 	SystemConfMgr.Debug = true
 	var confDir, confFile, processID, applicationDir, thProcessID, logDir, biDir string
+	var logLv int = logs.LevelDebug
 	flag.StringVar(&confFile, "conf", "", "Server configuration file path")
 	flag.StringVar(&confDir, "confdir", "", "配置文件夹路径")
 	flag.StringVar(&applicationDir, "wd", "", "Server work directory")
@@ -72,6 +75,7 @@ func InitConfig() error {
 	flag.StringVar(&thProcessID, "thpid", "development", "其它包括数据库等第三方服务器的统一ProcessID")
 	flag.StringVar(&logDir, "log", "", "Log file directory?")
 	flag.StringVar(&biDir, "bi", "", "bi file directory?")
+	logLv = *flag.Int("logLevel", logs.LevelDebug, "logLevel ?")
 	flag.Parse() //解析输入的参数
 
 	SystemConfMgr.Conf = confFile
@@ -80,9 +84,10 @@ func InitConfig() error {
 	SystemConfMgr.ThPID = thProcessID
 	SystemConfMgr.LogDir = logDir
 	SystemConfMgr.BiDir = biDir
+	SystemConfMgr.logLv = logLv
 
 	confData, err := SystemConfMgr.loadConfData()
-	if err != nil{
+	if err != nil {
 		log.Error("not find server.json from %s", confFile)
 		return err
 	}
@@ -90,6 +95,12 @@ func InitConfig() error {
 	if confDir == "" {
 		confDir = fmt.Sprintf("%s/bin/conf", SystemConfMgr.appDir)
 	}
+
+	//logger := log.LogBeego()
+	//SystemConfMgr.logLv = 2
+	//logger.SetLevel(SystemConfMgr.logLv)
+	//logger.Async(2048)
+	//logger.SetLevel(SystemConfMgr.logLv)
 
 	SystemConfMgr.ConfDir = confDir
 	SystemConfMgr.setRedisConf(confData)
@@ -198,5 +209,3 @@ func (this *SystemConf) setNatsConf(confData []byte) {
 		}
 	}
 }
-
-

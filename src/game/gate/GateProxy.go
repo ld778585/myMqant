@@ -5,8 +5,12 @@ import (
 	"game/define"
 	"game/msgType"
 	"github.com/liangdas/mqant/gate"
+	basegate "github.com/liangdas/mqant/gate/base"
 	"github.com/liangdas/mqant/log"
+	argsutil "github.com/liangdas/mqant/rpc/util"
+	"github.com/pkg/errors"
 	"redisClient"
+	"strings"
 	"time"
 )
 
@@ -26,12 +30,12 @@ func (this *GateProxy) init() {
 }
 
 func (this *GateProxy) Connect(session gate.Session) {
-	log.Debug("client connect from %v", session.GetIP())
+	//log.Debug("client connect from %v,%d", session.GetIP(),unsafe.Sizeof(session))
 }
 
 func (this *GateProxy) DisConnect(session gate.Session) {
-	log.Debug("client disconnect,sessionId:%s,uid:%s,IP:%v",
-		session.GetSessionID(),session.GetUserID(),session.GetIP())
+	//log.Debug("client disconnect,sessionId:%s,uid:%s,IP:%v",
+	//	session.GetSessionID(),session.GetUserID(),session.GetIP())
 	if session == nil {
 		return
 	}
@@ -81,14 +85,69 @@ func (this *GateProxy) Query(UserID string) (data []byte, err error) {
 }
 
 func (this *GateProxy) Heartbeat(session gate.Session) {
-	log.Debug("用户[%s]在线的心跳包", session.GetUserID())
+	//log.Debug("用户[%s]在线的心跳包", session.GetUserID())
 }
 
-func (this *GateProxy) OnRoute(session gate.Session, topic string, msg []byte) (bool, interface{}, error) {
-	//log.Debug("onRecvMsg,topic:%s,msgLen:byte",topic,len(msg))
+func (this *GateProxy) OnRoute(_session gate.Session, topic string, msg []byte) (bool, interface{}, error) {
+	var msgid string
+	topics := strings.Split(topic, "/")
+	if len(topics) < 2 {
+		errorstr := "Topic must be [moduleType@moduleID]/[handler]|[moduleType@moduleID]/[handler]/[msgid]"
+		log.Error(errorstr)
+		return true, nil, errors.New(errorstr)
+	} else if len(topics) == 3 {
+		msgid = topics[2]
+	}
+	var ArgsType []string = make([]string, 2)
+	var args [][]byte = make([][]byte, 2)
+	var moduleType = topics[0]
+	var mt = moduleType
+	var sid = ""
+	if sid = _session.GetRouteServerID(moduleType); sid != "" {
+		mt = sid
+	}
 
-	res := make([]byte,64)
-	session.Send(msgType.RPC_USER_LOGOUT.SendMsgName,res)
+	serverSession, err := this.gateModule.App.GetRouteServer(mt)
+	if serverSession == nil || err != nil {
+		serverSession,_ = this.gateModule.App.GetRouteServer(moduleType)
+	}
+
+	if serverSession == nil{
+		msg := fmt.Sprintf("Service(type:%s) not found", topics[0])
+		log.Error("%s", msg)
+		return true, nil, errors.New(msg)
+	}
+
+	if sid != serverSession.GetID() {
+		_session.SetRouteServerID(moduleType, serverSession.GetID())
+	}
+
+	ArgsType[1] = argsutil.BYTES
+	args[1] = msg
+	session := _session.Clone()
+	session.SetTopic(topic)
+	if msgid != "" {
+		ArgsType[0] = basegate.RPCParamSessionType
+		session.SetMsgID(msgid)
+		b, err := session.Serializable()
+		if err != nil {
+			return false, nil, nil
+		}
+		args[0] = b
+		serverSession.CallNRArgs(topics[1], ArgsType, args)
+	} else {
+		ArgsType[0] = basegate.RPCParamSessionType
+		b, err := session.Serializable()
+		if err != nil {
+			return false, nil, nil
+		}
+		args[0] = b
+
+		e := serverSession.CallNRArgs(topics[1], ArgsType, args)
+		if e != nil {
+			log.Warning("Gate RPC", e.Error())
+		}
+	}
 	return false, nil, nil
 }
 

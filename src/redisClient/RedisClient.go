@@ -210,6 +210,15 @@ func HDel(key string, pattern string) (bool, error) {
 	return res.(int64) == 1, nil
 }
 
+func IncrKey(key string) (int64,error){
+	res, err := Do("INCR", key)
+	if err != nil {
+		return 0, err
+	}
+
+	return res.(int64), nil
+}
+
 func Expipeat(key string, second int64)  (bool, error)  {
 	_, err := Do("EXPIREAT", key, second )
 	if err != nil {

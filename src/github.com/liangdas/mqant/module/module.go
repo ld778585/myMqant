@@ -54,7 +54,6 @@ type App interface {
 	Transport() *nats.Conn
 	Registry() registry.Registry
 	// Deprecated: 因为命名规范问题函数将废弃,请用GetServerByID代替
-	GetServerById(id string) (ServerSession, error)
 	GetServerByID(id string) (ServerSession, error)
 	/**
 	filter		 调用者服务类型    moduleType|moduleType@moduleID

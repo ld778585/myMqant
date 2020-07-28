@@ -163,11 +163,16 @@ func (sesid *sessionagent) SetLocalUserData(data interface{}) error {
 }
 
 func (sesid *sessionagent) GetRouteServerID(serverType string) string {
-	return ""
+	sesid.lock.RLock()
+	svrID := sesid.session.Settings[serverType]
+	sesid.lock.RUnlock()
+	return svrID
 }
 
-func (sesid *sessionagent) SetRouteServerId(serverType string, serverID string) {
-
+func (sesid *sessionagent) SetRouteServerID(serverType string, serverID string) {
+	sesid.lock.Lock()
+	sesid.session.Settings[serverType] = serverID
+	sesid.lock.Unlock()
 }
 
 func (sesid *sessionagent) updateMap(s map[string]interface{}) error {
@@ -495,6 +500,33 @@ func (sesid *sessionagent) SendNR(topic string, body []byte) string {
 	//}
 	return ""
 }
+
+func (this *sessionagent) SetMsgID(msgId string) {
+	this.lock.Lock()
+	this.session.Settings["MsgId"] = msgId
+	this.lock.Unlock()
+}
+
+func (this *sessionagent) GetMsgID() string {
+	this.lock.RLock()
+	msgId := this.session.Settings["MsgId"]
+	this.lock.RUnlock()
+	return msgId
+}
+
+func (sesid *sessionagent) SendCB(topic string, body []byte) (err string) {
+	msgId := sesid.GetMsgID()
+	if msgId != "" {
+		topic = fmt.Sprintf("%s/%s", topic, msgId)
+	}
+	return sesid.SendNR(topic, body)
+}
+
+func (sesid *sessionagent) SendCBWithProto(topic string, body proto.Message) (err string) {
+	b, _ := proto.Marshal(body)
+	return sesid.SendCB(topic, b)
+}
+
 
 func (sesid *sessionagent) Close() (err string) {
 	if sesid.app == nil {
