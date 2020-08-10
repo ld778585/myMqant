@@ -14,6 +14,8 @@ import (
 	"github.com/liangdas/mqant/selector"
 	"github.com/nats-io/nats.go"
 	"math/rand"
+	"net/http"
+	_ "net/http/pprof"
 	"redisClient"
 	"sync"
 	"systemConf"
@@ -63,6 +65,10 @@ func main() {
 		module.Registry(rs),
 		module.KillWaitTTL(time.Minute*1),
 	)
+
+	go func() {
+		http.ListenAndServe("0.0.0.0:6060", nil)
+	}()
 
 	initGlobalSelector(MyApp)
 	MyApp.OnConfigurationLoaded(onConfigLoaded)

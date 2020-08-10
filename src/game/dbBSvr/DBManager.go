@@ -2,6 +2,7 @@ package dbBSvr
 
 import (
 	"game/define"
+	"github.com/liangdas/mqant/log"
 	"mysqlClient"
 	"redisClient"
 	"sync"
@@ -36,8 +37,15 @@ func (this *DBManager) onUserLogin(uid int64)  (bool, error){
 		key := redisClient.GetUserDataKey(name,uid)
 		data, _ := redisClient.Get(key)
 		if data == nil {
-			if userData, _ := mysqlClient.GetUserData(uid, name); userData != nil {
-				redisClient.Set(key, string(userData))
+			userData, err := mysqlClient.GetUserData(uid, name);
+			if err == nil {
+				if userData != nil {
+					redisClient.Set(key, string(userData))
+				} else {
+					redisClient.Set(key,"{}")
+				}
+			} else {
+				log.Info("onUserLogin error=%s",err.Error())
 			}
 		}
 	}
@@ -48,5 +56,21 @@ func (this *DBManager) onUserLogout(uid int64) {
 	this.locker.Lock()
 	this.mapUserID[uid] = time.Now().Unix()
 	this.locker.Unlock()
+	this.saveUserData(uid)
+}
+
+func (this *DBManager) saveUserData(uid int64)  {
+	time.Sleep(time.Second * 1)
+	for _, name := range define.USER_DATA_NAME {
+		var key = redisClient.GetUserDataKey(name, int64(uid))
+		data, _ := redisClient.Get(key)
+		if data != nil {
+			if err := mysqlClient.SaveUserData(uid, name, data); err != nil {
+				log.Error("save user data to mysql ERROR:%v", err)
+			} else {
+				redisClient.Del(key)
+			}
+		}
+	}
 }
 

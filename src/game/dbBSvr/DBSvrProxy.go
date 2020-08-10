@@ -28,7 +28,7 @@ func (this *DBSvrProxy) RemoveEvents() {
 
 func (this *DBSvrProxy) RegisterMessages() {
 	this.RegisterGO(msgType.RPC_LOAD_USER_INFO_FROM_DB, this.onUserLogin)
-	this.RegisterGO(msgType.RPC_USER_LOGOUT, this.onUserLogin)
+	this.RegisterGO(msgType.RPC_USER_LOGOUT, this.onUserLogout)
 }
 
 func (this *DBSvrProxy) CancelMessages() {

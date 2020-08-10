@@ -115,7 +115,7 @@
   "Log": {
     "file": {
       "daily": true,
-      "level": 2,
+      "level": 7,
       "prefix": "",
       "suffix": ".log"
     }

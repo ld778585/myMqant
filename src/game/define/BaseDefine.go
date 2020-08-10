@@ -18,7 +18,11 @@ var SERVER_NAMES = []string{
 	SERVER_TYPE_HALL,
 }
 
+const (
+	USER_DATA_ROLE = "ROLE_DATA"
+)
+
 //表名枚举
 var USER_DATA_NAME = []string {
-	"ROLE_DATA",	//角色数据
+	USER_DATA_ROLE,	//角色数据
 }

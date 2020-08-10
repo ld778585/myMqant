@@ -33,6 +33,7 @@ func (this *LoginProxy) RemoveEvents() {
 
 func (this *LoginProxy) RegisterMessages() {
 	this.RegisterGO(msgType.CS_USER_LOGIN, this.onLoginRequest)
+	this.RegisterGO(msgType.RPC_USER_LOGOUT, this.onUserLogout)
 }
 
 func (this *LoginProxy) CancelMessages() {
@@ -50,7 +51,7 @@ func (this *LoginProxy) onLoginRequest(session gate.Session, msg []byte) {
 
 	loginRequest := &protobuf.LoginRequest{}
 	proto.Unmarshal(msg, loginRequest)
-	log.Debug("user login,account:%v", loginRequest.Account)
+	//log.Debug("user login,account:%v", loginRequest.Account)
 
 	res := &protobuf.LoginResponse{}
 	uid, e1 := this.mgr.onUserLogin(loginRequest.Account, loginRequest.PassWord)

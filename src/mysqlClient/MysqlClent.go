@@ -4,15 +4,18 @@ import (
 	"database/sql"
 	"fmt"
 	"game/define"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/liangdas/mqant/log"
 	"sync"
 	"systemConf"
+	"time"
 )
-import _ "github.com/go-sql-driver/mysql"
+
 
 var mysqlDB *sql.DB
 var systems map[string]bool
 var locker *sync.RWMutex
+var gDBName string
 
 func Initialize() {
 	if mysqlDB != nil {
@@ -22,6 +25,7 @@ func Initialize() {
 	conf := systemConf.SystemConfMgr.MysqlConf
 	log.Info("Mysql connect to address:%v; database:%v", conf.Address, conf.Database)
 	dbName := conf.Database
+	gDBName = dbName
 
 	var err error
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/", conf.Account, conf.Password, conf.Address)
@@ -30,6 +34,10 @@ func Initialize() {
 		panic(err)
 		return
 	}
+
+	mysqlDB.SetMaxIdleConns(10)
+	mysqlDB.SetMaxOpenConns(80)
+	mysqlDB.SetConnMaxLifetime(time.Minute * 30)
 	if e := mysqlDB.Ping(); e != nil {
 		panic(e)
 	}
@@ -72,13 +80,8 @@ func CreateTable(tableName string) {
 //systemName 系统名字
 //data 需要保存的数据
 func SaveUserData(uid int64, systemName string, data []byte) error {
-	locker.RLock()
-	_, ok := systems[systemName]
-	locker.RUnlock()
-	if !ok {
-		CreateTable(systemName)
-	}
-	_, err := mysqlDB.Exec(fmt.Sprintf("INSERT INTO `%s` (id,data) VALUES ", systemName)+
+	_, _ = mysqlDB.Exec(fmt.Sprintf("USE %v", gDBName))
+	_, err := mysqlDB.Exec(fmt.Sprintf("INSERT INTO `%s` (id,data) VALUES ",systemName)+
 		"(?,COMPRESS(?)) ON DUPLICATE KEY UPDATE data=COMPRESS(?);",
 		uid,
 		data,
@@ -90,13 +93,16 @@ func SaveUserData(uid int64, systemName string, data []byte) error {
 //uid 玩家名字
 //systemName 系统名字
 func GetUserData(uid int64, systemName string) (data []byte, err error) {
-	row := mysqlDB.QueryRow(fmt.Sprintf("select UNCOMPRESS(data) from `%s` where id=?", systemName), uid)
+	_, _ = mysqlDB.Exec(fmt.Sprintf("USE %v", gDBName))
+	row := mysqlDB.QueryRow(fmt.Sprintf("select UNCOMPRESS(data) from `%s` where id=?",systemName), uid)
 	if row == nil {
 		return nil, fmt.Errorf("Get user data from mysql db Error;uid=%v,systemName=%v", uid, systemName)
 	}
+
 	err = row.Scan(&data)
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
+	log.Info("userid:%d get data from mysql,len=%d",uid,len(data))
 	return data, nil
 }

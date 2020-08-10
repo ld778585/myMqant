@@ -368,7 +368,9 @@ func (s *RPCServer) runFunc(callInfo mqrpc.CallInfo) {
 		out := f.Call(in)
 		var rs []interface{}
 		if len(out) != 2 {
-			_errorCallback(callInfo.RPCInfo.Cid, fmt.Sprintf("%s rpc func(%s) return error %s\n", s.module.GetType(), callInfo.RPCInfo.Fn, "func(....)(result interface{}, err error)"))
+			if callInfo.RPCInfo.Reply{
+				_errorCallback(callInfo.RPCInfo.Cid, fmt.Sprintf("%s rpc func(%s) return error %s\n", s.module.GetType(), callInfo.RPCInfo.Fn, "func(....)(result interface{}, err error)"))
+			}
 			return
 		}
 		if len(out) > 0 { //prepare out paras
