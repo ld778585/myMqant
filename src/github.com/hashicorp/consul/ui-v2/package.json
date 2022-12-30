@@ -102,7 +102,7 @@
     "ember-truth-helpers": "^2.0.0",
     "eslint-plugin-ember": "^7.0.0",
     "eslint-plugin-node": "^10.0.0",
-    "flat": "^4.1.0",
+    "flat": "^5.0.1",
     "husky": "^3.0.5",
     "ivy-codemirror": "^2.1.0",
     "js-yaml": "^3.13.1",
